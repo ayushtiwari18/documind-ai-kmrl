@@ -1,0 +1,60 @@
+# public/_redirects
+
+# ====================
+# SPA ROUTING (REQUIRED)
+# ====================
+# Redirect all requests to index.html for React Router to handle
+/* /index.html 200
+
+# ====================
+# API REDIRECTS (Optional)
+# ====================
+# If you have API endpoints, redirect them to your backend
+/api/* https://your-api-domain.com/api/:splat 200
+/auth/* https://your-auth-service.com/auth/:splat 200
+
+# ====================
+# DOMAIN REDIRECTS
+# ====================
+# Redirect www to non-www (replace with your actual domain)
+https://www.kmrl-docs.netlify.app/* https://kmrl-docs.netlify.app/:splat 301!
+
+# Redirect HTTP to HTTPS
+http://kmrl-docs.netlify.app/* https://kmrl-docs.netlify.app/:splat 301!
+
+# ====================
+# ROUTE-SPECIFIC REDIRECTS
+# ====================
+# Redirect old routes to new ones (if migrating)
+/old-dashboard/* /dashboard/:splat 301
+/admin/* /dashboard/:splat 301
+
+# ====================
+# ERROR HANDLING
+# ====================
+# Custom 404 page (make sure you have a 404.html file)
+/404 /404.html 404
+
+# ====================
+# SECURITY & PERFORMANCE
+# ====================
+# Block access to sensitive files
+/.env* / 404
+/config/* / 404
+/.git/* / 404
+/node_modules/* / 404
+
+# ====================
+# ASSET OPTIMIZATION
+# ====================
+# Cache static assets for longer
+/static/* /static/:splat 200
+  Cache-Control: max-age=31536000
+  
+# Cache images
+/*.jpg /images/:splat 200
+  Cache-Control: max-age=7776000
+/*.png /images/:splat 200
+  Cache-Control: max-age=7776000
+/*.svg /images/:splat 200
+  Cache-Control: max-age=7776000
