@@ -28,7 +28,7 @@ export const HeroSection = () => {
               
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Button size="lg" className="bg-white text-primary hover:bg-green-50 font-semibold px-8 py-4 rounded-xl shadow-strong hover:shadow-medium transition-all duration-300 hover:scale-105">
+                <Button size="lg" className="bg-white text-primary hover:bg-green-50 font-semibold px-8 py-4 rounded-xl shadow-strong hover:shadow-medium transition-all duration-300 hover:scale-105" onClick={() => { window.location.href = '/dashboard'; }}>
                   Get Started
                 </Button>
                 <Button 

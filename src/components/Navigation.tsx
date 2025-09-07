@@ -40,10 +40,10 @@ export const Navigation = ({ isLoggedIn = false, userRole = "", notifications = 
                 <Link to="/" className={`transition-colors font-medium ${location.pathname === '/' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   Home
                 </Link>
-                <Link to="/#features" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/features" className="text-foreground hover:text-primary transition-colors font-medium">
                   Features
                 </Link>
-                <Link to="/#solutions" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/solutions" className="text-foreground hover:text-primary transition-colors font-medium">
                   Solutions
                 </Link>
                 <Link to="/about" className={`transition-colors font-medium ${location.pathname === '/about' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
