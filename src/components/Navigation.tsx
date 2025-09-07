@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Bell, Search, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ interface NavigationProps {
 
 export const Navigation = ({ isLoggedIn = false, userRole = "", notifications = 0 }: NavigationProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
@@ -35,33 +37,33 @@ export const Navigation = ({ isLoggedIn = false, userRole = "", notifications = 
           <div className="hidden md:flex items-center space-x-6">
             {!isLoggedIn ? (
               <>
-                <a href="/" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/" className={`transition-colors font-medium ${location.pathname === '/' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   Home
-                </a>
-                <a href="#features" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/#features" className="text-foreground hover:text-primary transition-colors font-medium">
                   Features
-                </a>
-                <a href="#solutions" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/#solutions" className="text-foreground hover:text-primary transition-colors font-medium">
                   Solutions
-                </a>
-                <a href="#about" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/about" className={`transition-colors font-medium ${location.pathname === '/about' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   About
-                </a>
-                <a href="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/contact" className={`transition-colors font-medium ${location.pathname === '/contact' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   Contact
-                </a>
+                </Link>
               </>
             ) : (
               <>
-                <a href="/dashboard" className="text-foreground hover:text-primary transition-colors font-medium">
+                <Link to="/dashboard" className={`transition-colors font-medium ${location.pathname === '/dashboard' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   Dashboard
-                </a>
-                <a href="/documents" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/documents" className="text-foreground hover:text-primary transition-colors font-medium">
                   Documents
-                </a>
-                <a href="/analytics" className="text-foreground hover:text-primary transition-colors font-medium">
+                </Link>
+                <Link to="/analytics" className={`transition-colors font-medium ${location.pathname === '/analytics' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   Analytics
-                </a>
+                </Link>
               </>
             )}
           </div>
@@ -129,18 +131,21 @@ export const Navigation = ({ isLoggedIn = false, userRole = "", notifications = 
             <div className="px-2 pt-2 pb-3 space-y-1 bg-card">
               {!isLoggedIn ? (
                 <>
-                  <a href="#features" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  <Link to="/" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                    Home
+                  </Link>
+                  <Link to="/#features" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Features
-                  </a>
-                  <a href="#solutions" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  </Link>
+                  <Link to="/#solutions" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Solutions
-                  </a>
-                  <a href="#about" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  </Link>
+                  <Link to="/about" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     About
-                  </a>
-                  <a href="#contact" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  </Link>
+                  <Link to="/contact" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Contact
-                  </a>
+                  </Link>
                   <div className="pt-4 flex flex-col space-y-2">
                     <Button variant="ghost" className="text-foreground">
                       Login
@@ -152,15 +157,15 @@ export const Navigation = ({ isLoggedIn = false, userRole = "", notifications = 
                 </>
               ) : (
                 <>
-                  <a href="/dashboard" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  <Link to="/dashboard" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Dashboard
-                  </a>
-                  <a href="/documents" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  </Link>
+                  <Link to="/documents" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Documents
-                  </a>
-                  <a href="/analytics" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
+                  </Link>
+                  <Link to="/analytics" className="block px-3 py-2 text-foreground hover:bg-accent rounded-md">
                     Analytics
-                  </a>
+                  </Link>
                 </>
               )}
             </div>
