@@ -1,0 +1,16 @@
+KMRL Safety Protocol Document
+
+This is a test document for the KMRL document management system. 
+
+Key Points:
+- Passenger safety is our top priority
+- Emergency protocols must be followed at all stations
+- Staff training is mandatory for all operational personnel
+- Regular safety audits are conducted monthly
+
+Action Items:
+1. Update emergency evacuation procedures by end of quarter
+2. Conduct staff training sessions for new safety protocols
+3. Install additional safety equipment at Platform 3
+
+This document serves as a template for testing the AI summarization feature of the Documind AI system.

@@ -1,5 +1,6 @@
 // src/pages/Documents.tsx (Enhanced with CRUD)
 import { useState, useEffect } from "react";
+import apiClient from "@/services/api";
 import { Link } from "react-router-dom";
 import {
   FileText,
@@ -74,8 +75,16 @@ interface Document {
   uploadDate: string;
   priority: "normal" | "high" | "urgent";
   status: "processed" | "pending" | "failed";
-  summary: string;
+  summary: string | {
+    executiveSummary: string;
+    keyPoints: string[];
+    actionItems: any[];
+    complianceItems: string[];
+    confidence: string;
+    documentType: string;
+  };
   department: string;
+  author?: string;
   fileSize: string;
   language: string;
   aiConfidence?: number;
@@ -280,14 +289,18 @@ const Documents = () => {
     department: string;
     priority: "normal" | "high" | "urgent";
     summary: string;
-    tags: string;
+  tags: string;
+  author?: string;
+  file?: File | null;
   }>({
     title: "",
     type: "",
     department: "",
     priority: "normal",
     summary: "",
-    tags: "",
+  tags: "",
+  author: "",
+  file: null,
   });
 
   // Load documents on component mount
@@ -333,8 +346,8 @@ const Documents = () => {
 
   // CRUD Operations
   const handleCreate = async () => {
-    if (!formData.title.trim()) {
-      setError("Document title is required");
+    if (!formData.title.trim() || !formData.file) {
+      setError("Document title and file are required");
       return;
     }
 
@@ -342,20 +355,31 @@ const Documents = () => {
     setError(null);
 
     try {
-      const newDoc = await mockAPI.createDocument({
-        ...formData,
-        tags: formData.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-      });
+      const uploadForm = new FormData();
+      uploadForm.append('title', formData.title);
+      uploadForm.append('type', formData.type || 'General');
+      uploadForm.append('department', formData.department || 'General');
+      uploadForm.append('priority', formData.priority || 'normal');
+      uploadForm.append('author', formData.author || 'Unknown');
+      uploadForm.append('tags', formData.tags);
+      // Ensure file input is handled
+      if (formData.file instanceof File) {
+        uploadForm.append('document', formData.file);
+      } else {
+        setError("Please select a valid file.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const response = await apiClient.upload('/documents/upload', uploadForm);
+      const newDoc = response.document;
 
       setDocuments((prev) => [newDoc, ...prev]);
-      setSuccess("Document created successfully!");
+      setSuccess("Document uploaded and summarized successfully!");
       setIsCreateOpen(false);
       resetForm();
     } catch (err) {
-      setError("Failed to create document");
+      setError("Failed to upload document");
     } finally {
       setIsProcessing(false);
     }
@@ -441,7 +465,9 @@ const Documents = () => {
       department: "",
       priority: "normal",
       summary: "",
-      tags: "",
+  tags: "",
+  author: "",
+  file: null,
     });
   };
 
@@ -452,8 +478,10 @@ const Documents = () => {
       type: doc.type,
       department: doc.department,
       priority: doc.priority,
-      summary: doc.summary,
+      summary: typeof doc.summary === 'string' ? doc.summary : doc.summary?.executiveSummary || '',
       tags: doc.tags?.join(", ") || "",
+      author: doc.author || "",
+      file: null,
     });
     setIsEditOpen(true);
   };
@@ -605,6 +633,18 @@ const Documents = () => {
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
+                      <Label htmlFor="file">Document File *</Label>
+                      <Input
+                        id="file"
+                        type="file"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                        onChange={(e) => {
+                          const file = e.target.files && e.target.files[0];
+                          setFormData((prev) => ({ ...prev, file: file || null }));
+                        }}
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="title">Document Title *</Label>
                       <Input
                         id="title"
@@ -616,6 +656,17 @@ const Documents = () => {
                           }))
                         }
                         placeholder="Enter document title..."
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="author">Author</Label>
+                      <Input
+                        id="author"
+                        value={formData.author}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, author: e.target.value }))
+                        }
+                        placeholder="Enter author name..."
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -1253,7 +1304,7 @@ const Documents = () => {
                   </div>
 
                   <p className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
-                    {doc.summary}
+                    {typeof doc.summary === 'string' ? doc.summary : doc.summary?.executiveSummary || 'No summary available'}
                   </p>
 
                   {doc.extractedEntities &&

@@ -1,0 +1,14 @@
+# Add to existing package.json scripts
+{
+  "scripts": {
+    "backend:install": "cd backend && npm install",
+    "backend:dev": "cd backend && npm run dev",
+    "backend:start": "cd backend && npm start",
+    "frontend:dev": "vite",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "setup": "npm install && npm run backend:install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
