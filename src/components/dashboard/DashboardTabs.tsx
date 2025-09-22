@@ -5,6 +5,7 @@ import { IngestionTab } from "./tabs/IngestionTab";
 import { AIInsightsTab } from "./tabs/AIInsightsTab";
 import { WorkflowTab } from "./tabs/WorkflowTab";
 import { ComplianceTab } from "./tabs/ComplianceTab";
+import { EmployeesTab } from "./tabs/EmployeesTab";
 import type {
   IngestionStats,
   AIProcessingMetrics,
@@ -14,6 +15,7 @@ import type {
   RoutingRule,
   ComplianceStats,
   ComplianceItem,
+  EmployeeStats,
 } from "@/types/dashboard";
 
 interface DashboardTabsProps {
@@ -26,6 +28,7 @@ interface DashboardTabsProps {
   complianceStats: ComplianceStats;
   upcomingItems: ComplianceItem[];
   processingQueue: number;
+  employeeStats: EmployeeStats;
 }
 
 export const DashboardTabs = ({
@@ -38,15 +41,17 @@ export const DashboardTabs = ({
   complianceStats,
   upcomingItems,
   processingQueue,
+  employeeStats,
 }: DashboardTabsProps) => {
   return (
     <Tabs defaultValue="overview" className="space-y-6">
-      <TabsList className="grid w-full grid-cols-5">
+      <TabsList className="grid w-full grid-cols-6">
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="ingestion">Document Ingestion</TabsTrigger>
         <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
         <TabsTrigger value="workflow">Smart Routing</TabsTrigger>
         <TabsTrigger value="compliance">Compliance</TabsTrigger>
+        <TabsTrigger value="employees">Employees</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview">
@@ -80,6 +85,10 @@ export const DashboardTabs = ({
           complianceStats={complianceStats}
           upcomingItems={upcomingItems}
         />
+      </TabsContent>
+
+      <TabsContent value="employees">
+        <EmployeesTab employeeStats={employeeStats} />
       </TabsContent>
     </Tabs>
   );

@@ -27,20 +27,20 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/documents/:id" element={<DocumentViewer />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/about" element={<About />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="/features" element={<Features />} />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/documents/:id" element={<DocumentViewer />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

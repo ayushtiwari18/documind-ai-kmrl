@@ -15,6 +15,7 @@ import type {
   ComplianceStats,
   ComplianceItem,
   StatsData,
+  EmployeeStats,
 } from "@/types/dashboard";
 
 const Dashboard = () => {
@@ -124,6 +125,61 @@ const Dashboard = () => {
       completedThisMonth: 18,
     } as ComplianceStats,
 
+    employeeStats: {
+      totalEmployees: 245,
+      activeEmployees: 182,
+      departmentDistribution: {
+        "Operations": 85,
+        "Engineering": 65,
+        "Safety": 25,
+        "Administration": 35,
+        "Finance": 20,
+        "IT": 15
+      },
+      recentActivity: [
+        {
+          id: "1",
+          name: "John Smith",
+          role: "Senior Engineer",
+          department: "Engineering",
+          status: "active",
+          lastActive: "Just now"
+        },
+        {
+          id: "2",
+          name: "Mary Johnson",
+          role: "Safety Officer",
+          department: "Safety",
+          status: "active",
+          lastActive: "5 min ago"
+        },
+        {
+          id: "3",
+          name: "Raj Patel",
+          role: "Operations Manager",
+          department: "Operations",
+          status: "away",
+          lastActive: "15 min ago"
+        },
+        {
+          id: "4",
+          name: "Sarah Lee",
+          role: "Financial Analyst",
+          department: "Finance",
+          status: "active",
+          lastActive: "2 min ago"
+        },
+        {
+          id: "5",
+          name: "James Wilson",
+          role: "IT Specialist",
+          department: "IT",
+          status: "offline",
+          lastActive: "1 hour ago"
+        }
+      ]
+    } as EmployeeStats,
+
     upcomingItems: [
       {
         id: "1",
@@ -194,6 +250,7 @@ const Dashboard = () => {
           complianceStats={mockData.complianceStats}
           upcomingItems={mockData.upcomingItems}
           processingQueue={12}
+          employeeStats={mockData.employeeStats}
         />
 
         <DashboardFooter />

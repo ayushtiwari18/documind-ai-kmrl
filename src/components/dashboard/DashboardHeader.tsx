@@ -36,7 +36,7 @@ export const DashboardHeader = ({
     <div className="mb-8">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             Good morning, {userName}
           </h1>
           <p className="text-muted-foreground flex items-center">

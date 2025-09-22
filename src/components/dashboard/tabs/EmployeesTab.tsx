@@ -1,0 +1,106 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { EmployeeStats } from "@/types/dashboard";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+
+interface EmployeesTabProps {
+  employeeStats: EmployeeStats;
+}
+
+export const EmployeesTab = ({ employeeStats }: EmployeesTabProps) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "bg-green-500";
+      case "away":
+        return "bg-yellow-500";
+      case "offline":
+        return "bg-gray-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+        <CardHeader>
+          <CardTitle>Total Employees</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{employeeStats.totalEmployees}</div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Currently Active</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{employeeStats.activeEmployees}</div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Department Distribution</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {Object.entries(employeeStats.departmentDistribution).map(([dept, count]) => (
+              <div key={dept} className="flex justify-between items-center">
+                <span>{dept}</span>
+                <Badge variant="secondary">{count}</Badge>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="md:col-span-2 lg:col-span-3">
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Department</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Last Active</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {employeeStats.recentActivity.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell>{employee.name}</TableCell>
+                  <TableCell>{employee.role}</TableCell>
+                  <TableCell>{employee.department}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={getStatusColor(employee.status)}
+                    >
+                      {employee.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{employee.lastActive}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default EmployeesTab;

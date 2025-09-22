@@ -71,3 +71,21 @@ export interface StatsData {
   complianceTasks: number;
   knowledgeSearches: number;
 }
+
+export interface Employee {
+  id: string;
+  name: string;
+  role: string;
+  department: string;
+  status: 'active' | 'away' | 'offline';
+  lastActive: string;
+}
+
+export interface EmployeeStats {
+  totalEmployees: number;
+  activeEmployees: number;
+  departmentDistribution: {
+    [key: string]: number;
+  };
+  recentActivity: Employee[];
+}

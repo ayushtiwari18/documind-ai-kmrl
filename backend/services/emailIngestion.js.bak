@@ -1,0 +1,147 @@
+import nodemailer from 'nodemailer';
+import { simpleParser } from 'mailparser';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+class EmailIngestionService {
+  constructor() {
+    // Initialize IMAP client with environment variables
+    this.imapConfig = {
+      user: process.env.EMAIL_USER,
+      password: process.env.EMAIL_PASSWORD,
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT) || 993,
+      tls: true,
+    };
+  }
+
+  async saveAttachment(attachment, filename) {
+    const uploadDir = path.join(__dirname, '..', 'uploads');
+    const uniqueFilename = `${uuidv4()}-${filename}`;
+    const filePath = path.join(uploadDir, uniqueFilename);
+    
+    await fs.writeFile(filePath, attachment.content);
+    
+    return {
+      filename: uniqueFilename,
+      originalName: filename,
+      path: filePath,
+      contentType: attachment.contentType,
+      size: attachment.size
+    };
+  }
+
+  async processEmail(email) {
+    try {
+      const parsed = await simpleParser(email);
+      const documents = [];
+
+      // Process attachments if any
+      if (parsed.attachments && parsed.attachments.length > 0) {
+        for (const attachment of parsed.attachments) {
+          // Check if attachment is a supported document type
+          if (this.isSupportedDocumentType(attachment.contentType)) {
+            const savedFile = await this.saveAttachment(attachment, attachment.filename);
+            
+            documents.push({
+              id: uuidv4(),
+              title: attachment.filename,
+              filename: savedFile.filename,
+              originalName: attachment.filename,
+              source: `Email - ${parsed.from.text}`,
+              uploadDate: new Date().toISOString(),
+              type: this.getDocumentType(attachment.contentType),
+              language: 'English', // Default, could be detected
+              priority: 'normal',
+              department: 'General',
+              author: parsed.from.text,
+              fileSize: savedFile.size,
+              status: 'uploaded',
+              emailMetadata: {
+                subject: parsed.subject,
+                from: parsed.from.text,
+                date: parsed.date,
+                messageId: parsed.messageId
+              },
+              filePath: savedFile.path
+            });
+          }
+        }
+      }
+
+      // If email body contains significant text, process it as a document
+      if (parsed.text && parsed.text.length > 100) {
+        const emailTextFilename = `email-${uuidv4()}.txt`;
+        const savedFile = await this.saveAttachment(
+          { 
+            content: Buffer.from(parsed.text),
+            contentType: 'text/plain',
+            size: parsed.text.length
+          },
+          emailTextFilename
+        );
+
+        documents.push({
+          id: uuidv4(),
+          title: parsed.subject || 'Email Content',
+          filename: savedFile.filename,
+          originalName: emailTextFilename,
+          source: `Email - ${parsed.from.text}`,
+          uploadDate: new Date().toISOString(),
+          type: 'Email Content',
+          language: 'English',
+          priority: 'normal',
+          department: 'General',
+          author: parsed.from.text,
+          fileSize: savedFile.size,
+          status: 'uploaded',
+          emailMetadata: {
+            subject: parsed.subject,
+            from: parsed.from.text,
+            date: parsed.date,
+            messageId: parsed.messageId
+          },
+          filePath: savedFile.path
+        });
+      }
+
+      return documents;
+    } catch (error) {
+      console.error('Error processing email:', error);
+      throw error;
+    }
+  }
+
+  isSupportedDocumentType(mimeType) {
+    const supportedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/plain'
+    ];
+    
+    return supportedTypes.includes(mimeType);
+  }
+
+  getDocumentType(mimeType) {
+    const mimeTypeMap = {
+      'application/pdf': 'PDF Document',
+      'application/msword': 'Word Document',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word Document',
+      'application/vnd.ms-excel': 'Excel Spreadsheet',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel Spreadsheet',
+      'text/plain': 'Text Document'
+    };
+    
+    return mimeTypeMap[mimeType] || 'Unknown Document Type';
+  }
+}
+
+export default EmailIngestionService;

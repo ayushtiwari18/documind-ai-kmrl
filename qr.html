@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WhatsApp QR Code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #qrcode {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 4px;
+        }
+        h2 {
+            color: #128C7E;
+        }
+        ol {
+            text-align: left;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>WhatsApp QR Code</h2>
+        <div id="qrcode"></div>
+        <h3>How to connect:</h3>
+        <ol>
+            <li>Open WhatsApp on your phone</li>
+            <li>Tap Menu (⋮) or Settings</li>
+            <li>Tap Linked Devices</li>
+            <li>Tap "Link a Device"</li>
+            <li>Point your phone at this screen to scan the code</li>
+        </ol>
+    </div>
+
+    <script>
+        const qrData = '2@Cx4O9PgQ6qbUtdIl2SjXIJPU9UlFtuedGlnh04PowMLl6YYWP1tCRmlCdZSlNzwKJDL5fYwhl1ECR0zo2kyycBzVH2XOgYxVsUY=,yeVIqSO25WED/ewBne+xkv8yiUv2yGkv8GJwYI4JIXQ=,eFuQeC3OipWXYFkqEyO3vH/2cg1SAK43yzm8K0qgaVw=,v6+87b5HxN38+Kt4RYVDrcejP5IqLt3l3QVfCwl+xa4=,1';
+        
+        new QRCode(document.getElementById("qrcode"), {
+            text: qrData,
+            width: 256,
+            height: 256,
+            colorDark: "#128C7E",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
