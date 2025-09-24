@@ -1,6 +1,6 @@
 // API configuration
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://documind-ai-kmrl-backend.onrender.com' 
+  ? 'https://your-production-api.com/api' 
   : 'http://localhost:3001/api';
 
 // API client with error handling
