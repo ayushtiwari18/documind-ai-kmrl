@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://documind-ai-kmrl-backend.onrender.com';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 // API client configuration
 const apiClient = {
