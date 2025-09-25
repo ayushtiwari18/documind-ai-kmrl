@@ -63,18 +63,25 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
       try {
         // Start email service
         console.log('Starting email service...');
-        await axios.post('http://localhost:3001/api/email/start');
+        await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/email/start');
         console.log('Email service started successfully');
 
         // Start WhatsApp service
         console.log('Starting WhatsApp service...');
-        await axios.post('http://localhost:3001/api/whatsapp/start');
+        await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/whatsapp/start');
         console.log('WhatsApp service started successfully');
       } catch (error) {
-        console.error('Failed to start services:', error.response?.data || error.message);
-        // Retry after 2 seconds if failed
-        console.log('Retrying in 2 seconds...');
-        setTimeout(startServices, 2000);
+        console.error('Failed to start services:', error);
+        // Don't retry on 429 (Too Many Requests)
+        if (error.response?.status === 429) {
+          console.log('Rate limit exceeded. Waiting for rate limit reset...');
+          return;
+        }
+        // Don't retry on CORS errors
+        if (error.message?.includes('NetworkError')) {
+          console.log('CORS error detected. Please check server configuration.');
+          return;
+        }
       }
     };
     startServices();
@@ -86,12 +93,12 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
       try {
         // Fetch email notifications
         console.log('Fetching email notifications...');
-        const emailResponse = await axios.get('http://localhost:3001/api/email/status');
+        const emailResponse = await axios.get('https://documind-ai-kmrl-backend.onrender.com/api/email/status');
         console.log('Email status response:', emailResponse.data);
 
         // Fetch WhatsApp notifications
         console.log('Fetching WhatsApp notifications...');
-        const whatsappResponse = await axios.get('http://localhost:3001/api/whatsapp/status');
+        const whatsappResponse = await axios.get('https://documind-ai-kmrl-backend.onrender.com/api/whatsapp/status');
         console.log('WhatsApp status response:', whatsappResponse.data);
 
         const notifications: Notification[] = [];
@@ -143,12 +150,12 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
         // Check if services need to be started
         if (!emailResponse.data.status || emailResponse.data.status === 'stopped') {
           console.log('Email service not running, starting it...');
-          await axios.post('http://localhost:3001/api/email/start');
+          await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/email/start');
         }
 
         if (!whatsappResponse.data.status || whatsappResponse.data.status === 'stopped') {
           console.log('WhatsApp service not running, starting it...');
-          await axios.post('http://localhost:3001/api/whatsapp/start');
+          await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/whatsapp/start');
         }
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
@@ -158,8 +165,8 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
     // Initial fetch
     fetchNotifications();
 
-    // Poll for new notifications every 5 seconds
-    const interval = setInterval(fetchNotifications, 5000);
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
 
     return () => clearInterval(interval);
   }, []);
@@ -175,7 +182,7 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
     try {
       switch (notification.type) {
         case 'email':
-          await axios.post('http://localhost:3001/api/email/clear-notifications', {
+          await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/email/clear-notifications', {
             ids: [notification.id]
           });
           
@@ -187,7 +194,7 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
           break;
 
         case 'whatsapp':
-          await axios.post('http://localhost:3001/api/whatsapp/clear-notifications', {
+          await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/whatsapp/clear-notifications', {
             ids: [notification.id]
           });
 
@@ -215,14 +222,14 @@ export const Navigation = ({ isLoggedIn = false, userRole = "" }: NavigationProp
     try {
       // Clear email notifications in backend
       if (emailIds.length > 0) {
-        await axios.post('http://localhost:3001/api/email/clear-notifications', {
+        await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/email/clear-notifications', {
           ids: emailIds
         });
       }
 
       // Clear WhatsApp notifications in backend
       if (whatsappIds.length > 0) {
-        await axios.post('http://localhost:3001/api/whatsapp/clear-notifications', {
+        await axios.post('https://documind-ai-kmrl-backend.onrender.com/api/whatsapp/clear-notifications', {
           ids: whatsappIds
         });
       }

@@ -3,7 +3,7 @@
 // Test script to verify backend setup
 import fetch from 'node-fetch';
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://documind-ai-kmrl-backend.onrender.com';
 
 async function testBackend() {
   console.log('🧪 Testing Documind AI Backend...\n');
