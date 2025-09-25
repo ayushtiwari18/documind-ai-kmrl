@@ -34,26 +34,33 @@ const limiter = rateLimit({
   skip: (req) => process.env.NODE_ENV !== 'production', // Skip rate limiting in development
 });
 
-// Configure CORS first
+// Configure CORS
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:3000',
+  'http://localhost:5173' // A common port for Vite dev servers
+];
+
+// Add the production frontend URL from environment variables if it exists
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:8080', 'http://localhost:3000', 'https://documind-ai-kmrl.vercel.app'];
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests if their origin is in our list or if they have no origin (like Postman)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
-  optionsSuccessStatus: 200,
-  preflightContinue: false
+  optionsSuccessStatus: 200
 };
 
-// Handle pre-flight requests
-app.options('*', cors(corsOptions));
+// Apply CORS middleware to all routes
+app.use(cors(corsOptions));
 
 // Apply CORS to all routes
 app.use(cors(corsOptions));
